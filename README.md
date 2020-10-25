@@ -1,6 +1,6 @@
 # server
 
-Our entry point for the server is index.js. Our server currently runs on port 3000, go to localhost:3000 in your browser to see the "Hello World" message.
+Our entry point for the server is index.js. Since this has a database connection now, you need a .env file! This way we don't expose the school's RDS credentials to everyone on Github. Just place the .env file that has the proper variables in the root of the project! Source control won't include it when you commit.
 
 ## Project setup
 
