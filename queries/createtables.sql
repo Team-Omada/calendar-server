@@ -3,7 +3,9 @@ CREATE TABLE `users` (
   `username` VARCHAR(20) NOT NULL,
   `passhash` VARCHAR(255) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`userID`)
+  PRIMARY KEY (`userID`),
+  CONSTRAINT `unique_username` UNIQUE (`username`),
+  CONSTRAINT `unique_email` UNIQUE (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 
