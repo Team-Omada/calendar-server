@@ -2,13 +2,17 @@ const pool = require("../database/connection");
 
 module.exports = {
   async register(req, res) {
-    const query = `
+    const insertQuery = `
       INSERT INTO users (email, username, passhash)
       VALUES (?, ?, ?)
     `;
-    let vals = [req.body.email, req.body.username, req.body.passhash];
+    // insert the user into the database
     try {
-      await pool.execute(query, vals);
+      await pool.execute(insertQuery, [
+        req.body.email,
+        req.body.username,
+        req.body.passhash,
+      ]);
       res.send({
         message: "Registered New User!",
         email: req.body.email,
@@ -25,14 +29,20 @@ module.exports = {
     try {
       let [results] = await pool.query(query);
       console.log(results);
-      res.send({
-        userID: results[0].userID,
-        username: results[0].username,
-        passhash: results[0].passhash,
-        email: results[0].email,
-      });
+      if (results.length !== 0) {
+        res.send({
+          userID: results[0].userID,
+          username: results[0].username,
+          passhash: results[0].passhash,
+          email: results[0].email,
+        });
+      } else {
+        res.send({
+          message: "There are no records to display!",
+        });
+      }
     } catch (err) {
-      res.send({ error: "Error getting records." });
+      res.status(500).send({ error: "Error getting records." });
       console.log("Error retrieving tables: ", err);
     }
   },

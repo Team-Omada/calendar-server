@@ -11,5 +11,5 @@ const pool = mysql.createPool({
   database: process.env.RDS_DB_NAME,
 });
 
-// convert that pool to allow queries to use await/sync
+// convert pool to allow queries to use await/sync
 module.exports = pool.promise();
