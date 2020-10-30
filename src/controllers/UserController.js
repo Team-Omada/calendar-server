@@ -1,16 +1,22 @@
-const { validateUser } = require("../services/AddUser");
-const { fakeAuth } = require("../services/AuthUser");
+const {
+  validateUser,
+  hashPassword,
+  createUser,
+} = require("../services/UserService");
+const { fakeAuth } = require("../services/AuthService");
 
 module.exports = {
   async register(req, res, next) {
     const { email, username, password } = req.body;
     try {
       await validateUser(email, username, password);
+      const passhash = await hashPassword(password);
+      await createUser(email, username, passhash);
       res.send({
         message: "Registered New User!",
+        passhash,
         email,
         username,
-        password,
       });
     } catch (err) {
       next(err);

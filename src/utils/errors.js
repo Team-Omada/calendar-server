@@ -5,7 +5,7 @@ class GeneralError extends Error {
   constructor(
     status = 500,
     message = "An unknown error occured.",
-    info = "",
+    info = "", // use this field to send which field caused the error on client
     ...params
   ) {
     // Pass remaining arguments (including vendor specific ones) to parent constructor

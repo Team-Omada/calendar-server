@@ -4,6 +4,7 @@ module.exports = handleErrors = (err, req, res, next) => {
   // if it's a database related error, send a generic message defined in error
   // user doesn't need large error string in client
   if (err instanceof DatabaseError) {
+    console.log(err.info);
     return res.status(err.status).json({
       message: err.message,
     });
