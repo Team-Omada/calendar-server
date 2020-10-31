@@ -18,11 +18,11 @@ class GeneralError extends Error {
 
 class BadRequest extends GeneralError {} // Bad Request (400)
 class DatabaseError extends GeneralError {} // Any error within ./models (500)
-class Forbidden extends GeneralError {} // Forbidden (403) use when auth fails
+class Unauthorized extends GeneralError {} // Unauthorized (401) use when auth fails
 
 module.exports = {
   GeneralError,
   BadRequest,
   DatabaseError,
-  Forbidden,
+  Unauthorized,
 };
