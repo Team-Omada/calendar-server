@@ -3,7 +3,7 @@ const {
   hashPassword,
   createUser,
 } = require("../services/UserService");
-const { fakeAuth } = require("../services/AuthService");
+const { checkCredentials } = require("../services/AuthService");
 
 module.exports = {
   async register(req, res, next) {
@@ -23,13 +23,12 @@ module.exports = {
     }
   },
   async login(req, res, next) {
+    const { email, password } = req.body;
     try {
-      let results = await fakeAuth();
+      await checkCredentials(email, password);
       res.send({
-        userID: results[0].userID,
-        username: results[0].username,
-        passhash: results[0].passhash,
-        email: results[0].email,
+        message: "Login was successful!",
+        email,
       });
     } catch (err) {
       next(err);
