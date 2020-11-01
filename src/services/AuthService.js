@@ -13,22 +13,17 @@ module.exports = {
    *
    * @returns {Object} account info if account is found and passwords match, otherwise:
    * @throws {Unauthorized} when either check fails
-   * @throws {GeneralError} if the bcrypt comparison fails
    */
   async checkCredentials(email, password) {
     let accountInfo = await getUserByEmailDb(email);
     if (!accountInfo) {
       throw new Unauthorized(401, "The email or password is incorrect.");
     }
-    try {
-      const match = await bcrypt.compare(password, accountInfo.passhash);
-      if (match) {
-        return accountInfo;
-      } else {
-        throw new Unauthorized(401, "The email or password is incorrect.");
-      }
-    } catch (err) {
-      throw new GeneralError(500, "There was an issue logging you in.");
+    const match = await bcrypt.compare(password, accountInfo.passhash);
+    if (match) {
+      return accountInfo;
+    } else {
+      throw new Unauthorized(401, "The email or password is incorrect.");
     }
   },
 
