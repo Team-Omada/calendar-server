@@ -3,7 +3,7 @@ const router = express.Router();
 const UserController = require("./controllers/UserController");
 
 router.post("/register", UserController.register);
-router.get("/login", UserController.login);
+router.post("/login", UserController.login);
 
 // sample of how we would use checkAuthenticated function
 // checkAuthenticated runs before the res.send() call

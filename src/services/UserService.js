@@ -82,8 +82,10 @@ module.exports = {
    * @param {String} email validated CSUSM student email address
    * @param {String} username validated unique username
    * @param {String} passhash hashed password
+   *
+   * @returns {Number} the userID of the user that was inserted
    */
   async createUser(email, username, passhash) {
-    await insertUserDb(email, username, passhash);
+    return await insertUserDb(email, username, passhash);
   },
 };

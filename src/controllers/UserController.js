@@ -10,18 +10,21 @@ const {
 } = require("../services/AuthService");
 
 module.exports = {
-  // Validates new user credentials, hashes password, and creates the user
+  // Validates new user credentials, hashes password, creates user, sends JWT with credentials
   async register(req, res, next) {
     const { email, username, password } = req.body;
     try {
       await validateUser(email, username, password);
       const passhash = await hashPassword(password);
-      await createUser(email, username, passhash);
+      const userID = await createUser(email, username, passhash);
+      const token = generateJWT(email, username, userID);
       res.send({
-        message: "Registered New User!",
-        passhash,
-        email,
-        username,
+        user: {
+          email,
+          username,
+          userID,
+        },
+        token,
       });
     } catch (err) {
       next(err);
@@ -39,10 +42,12 @@ module.exports = {
         accountInfo.userID
       );
       res.send({
-        message: "Login was successful!",
-        username: accountInfo.username,
+        user: {
+          email,
+          username: accountInfo.username,
+          userID: accountInfo.userID,
+        },
         token,
-        email,
       });
     } catch (err) {
       next(err);
@@ -60,7 +65,7 @@ module.exports = {
       // if there is no token, [1] will be an empty string
       const token = req.headers.authorization.split(" ")[1];
       const payload = verifyJWT(token);
-      req.userInfo = payload;
+      req.userInfo = payload; // do something with payload?
       next();
     } catch (err) {
       return res.status(err.status).send({
