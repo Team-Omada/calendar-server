@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const { checkUniqueDb, insertUserDb } = require("../db/User");
+const { checkUniqueUserDb, insertUserDb } = require("../db/User");
 const { BadRequest, GeneralError } = require("../utils/errors");
 
 module.exports = {
@@ -35,7 +35,7 @@ module.exports = {
       );
     } else {
       // check if the email or username is already in use
-      let result = await checkUniqueDb(email, username);
+      let result = await checkUniqueUserDb(email, username);
       if (result) {
         if (result.email === email) {
           throw new BadRequest(

@@ -22,8 +22,8 @@ CREATE TABLE `schedules` (
 
 
 CREATE TABLE `courses` (
-  `courseID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `courseName` VARCHAR(45) NOT NULL,
+  `courseID` VARCHAR(45) NOT NULL,
+  `courseName` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`courseID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 

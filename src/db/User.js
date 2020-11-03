@@ -37,7 +37,7 @@ module.exports = {
    * @returns {Object} of the first account found with same username or email, null otherwise
    * @throws {DatabaseError} the query wasn't executed, validation will then fail
    */
-  async checkUniqueDb(email, username) {
+  async checkUniqueUserDb(email, username) {
     const query = `
       SELECT * FROM users WHERE (email = ? OR username = ?) LIMIT 1
     `;
