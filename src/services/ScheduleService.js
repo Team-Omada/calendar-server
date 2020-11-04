@@ -12,19 +12,6 @@ module.exports = {
    * @returns {Number} the ID of the inserted schedule
    */
   async createSchedule(userID, schedule, courses) {
-    // wrapped in array for use in MySQL driver
-    const courseInfo = courses.map((course) => {
-      return [course.courseID, course.courseName];
-    });
-    const sectionInfo = courses.map((course) => {
-      return [
-        course.courseID,
-        course.instructor,
-        course.days,
-        course.startTime,
-        course.endTime,
-      ];
-    });
-    return await insertScheduleDb(userID, shcedule, courseInfo, sectionInfo);
+    return await insertScheduleDb(userID, schedule, courses);
   },
 };

@@ -11,13 +11,12 @@ module.exports = {
    *
    * @param {Number} userID of the user who is creating schedule
    * @param {Object} schedule contains info like semester, title
-   * @param {Array} courseInfo [[courseID, courseName],...,]
-   * @param {Array} scheduleInfo [[courseID, instructor, days, startTime, endTime],...,]
+   * @param {Array} courses contains all info on the courses for this schedule
    *
    * @returns {Number} the ID of the schedule that was successfully inserted
    * @throws {DatabaseError} if any query happens to fail
    */
-  async insertScheduleDb(userID, schedule, courseInfo, sectionInfo) {
+  async insertScheduleDb(userID, schedule, courses) {
     let transactionConn;
     try {
       transactionConn = await pool.getConnection();
@@ -31,14 +30,19 @@ module.exports = {
     `;
     try {
       await transactionConn.query("START TRANSACTION");
-      const [results] = await transactionConn.execute(scheduleQuery, [
+      const [insertedSchedule] = await transactionConn.execute(scheduleQuery, [
         schedule.title,
         schedule.semester,
+        userID,
       ]);
-      await insertCoursesDb(transactionConn, courseInfo);
-      await insertSectionsDb(transactionConn, userID, sectionInfo);
+      await insertCoursesDb(transactionConn, courses);
+      await insertSectionsDb(
+        transactionConn,
+        courses,
+        insertedSchedule.insertId
+      );
       await transactionConn.query("COMMIT");
-      return results.insertId;
+      return insertedSchedule.insertId;
     } catch (err) {
       await transactionConn.query("ROLLBACK");
       throw new DatabaseError(
@@ -47,7 +51,7 @@ module.exports = {
         err
       );
     } finally {
-      await pool.releaseConnection(transactionConn);
+      await transactionConn.release();
     }
   },
 };

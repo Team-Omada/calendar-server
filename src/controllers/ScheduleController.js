@@ -6,6 +6,7 @@ module.exports = {
     try {
       const scheduleID = await createSchedule(userID, schedule, courses);
       res.send({
+        message: "Schedule added!",
         scheduleID,
       });
     } catch (err) {
