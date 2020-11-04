@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const UserController = require("./controllers/UserController");
+const ScheduleController = require("./controllers/ScheduleController");
 
 router.post("/register", UserController.register);
 router.post("/login", UserController.login);
 
 // some of these look a bit complicated, but I think this follows REST standards
+router.post("/schedules", ScheduleController.postSchedule); // create a schedule
 router.get("/schedules"); // get all schedules
-router.post("/schedules"); // create a schedule
 router.get("/schedules/:scheduleID"); // get a specific schedule
 router.delete("/schedules/:scheduleID"); // delete a specific schedule
 router.put("/schedules/:scheduleID"); // update a specific schedule
