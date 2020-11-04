@@ -43,12 +43,12 @@ CREATE TABLE `comments` (
 
 
 CREATE TABLE `schedule_has_courses` (
-  `courseID` INT UNSIGNED NOT NULL,
+  `courseID` VARCHAR(45) NOT NULL,
   `scheduleID` INT UNSIGNED NOT NULL,
   `instructor` VARCHAR(45) NOT NULL,
   `days` VARCHAR(45) NOT NULL,
-  `startTime` DATETIME NOT NULL,
-  `endTime` DATETIME NOT NULL,
+  `startTime` TIME NOT NULL,
+  `endTime` TIME NOT NULL,
   PRIMARY KEY (`courseID`,`scheduleID`),
   CONSTRAINT `FK_has_courses_courseID` FOREIGN KEY (`courseID`) REFERENCES `courses` (`courseID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_has_schedules_scheduleID` FOREIGN KEY (`scheduleID`) REFERENCES `schedules` (`scheduleID`) ON DELETE CASCADE ON UPDATE CASCADE
