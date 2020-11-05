@@ -46,9 +46,15 @@ CREATE TABLE `schedule_has_courses` (
   `courseID` VARCHAR(45) NOT NULL,
   `scheduleID` INT UNSIGNED NOT NULL,
   `instructor` VARCHAR(45) NOT NULL,
-  `days` VARCHAR(45) NOT NULL,
   `startTime` TIME NOT NULL,
   `endTime` TIME NOT NULL,
+  `monday` tinyint(1) NOT NULL,
+  `tuesday` tinyint(1) NOT NULL,
+  `wednesday` tinyint(1) NOT NULL,
+  `thursday` tinyint(1) NOT NULL,
+  `friday` tinyint(1) NOT NULL,
+  `saturday` tinyint(1) NOT NULL,
+  `sunday` tinyint(1) NOT NULL;
   PRIMARY KEY (`courseID`,`scheduleID`),
   CONSTRAINT `FK_has_courses_courseID` FOREIGN KEY (`courseID`) REFERENCES `courses` (`courseID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_has_schedules_scheduleID` FOREIGN KEY (`scheduleID`) REFERENCES `schedules` (`scheduleID`) ON DELETE CASCADE ON UPDATE CASCADE
