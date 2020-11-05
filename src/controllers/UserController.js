@@ -12,7 +12,7 @@ const {
 module.exports = {
   // Validates new user credentials, hashes password, creates user, sends JWT with credentials
   async register(req, res, next) {
-    const { email, username, password } = req.body;
+    const { email = "", username = "", password = "" } = req.body;
     try {
       await validateUser(email, username, password);
       const passhash = await hashPassword(password);
@@ -33,7 +33,7 @@ module.exports = {
 
   // Checks provided credentials and generates a JWT to send
   async login(req, res, next) {
-    const { email, password } = req.body;
+    const { email = "", password = "" } = req.body;
     try {
       const accountInfo = await checkCredentials(email, password);
       const token = generateJWT(
