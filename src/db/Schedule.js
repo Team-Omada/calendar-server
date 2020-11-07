@@ -25,14 +25,15 @@ module.exports = {
     }
 
     const scheduleQuery = `
-      INSERT INTO schedules (scheduleTitle, semester, userID)
-      VALUES (?, ?, ?)
+      INSERT INTO schedules (scheduleTitle, semester, semesterYear, userID)
+      VALUES (?, ?, ?, ?)
     `;
     try {
       await transactionConn.query("START TRANSACTION");
       const [insertedSchedule] = await transactionConn.execute(scheduleQuery, [
         schedule.title,
-        schedule.semester,
+        schedule.semesterInfo.name,
+        schedule.semesterInfo.year,
         userID,
       ]);
       await insertCoursesDb(transactionConn, courses);
