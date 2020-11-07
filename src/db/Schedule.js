@@ -55,4 +55,70 @@ module.exports = {
       await transactionConn.release();
     }
   },
+
+  /**
+   * Retrieves all schedules with user info and schedule info
+   *
+   * @returns {Array} with all schedule rows
+   * @throws {DatabaseError} if the query could not be executed
+   */
+  async selectAllSchedulesDb() {
+    const query = `
+      SELECT users.userID, users.username, scheduleID, 
+        datePosted, scheduleTitle, semester, semesterYear
+      FROM users
+      JOIN schedules ON schedules.userID = users.userID
+      ORDER BY datePosted DESC LIMIT 10;
+    `;
+    try {
+      const [results] = await pool.query(query);
+      return results;
+    } catch (err) {
+      throw new DatabaseError(500, "Error fetching schedules.", err);
+    }
+  },
+
+  /**
+   * Retrieves a row with the following scheduleID
+   *
+   * @param {Number} scheduleID the id of the schedule to find
+   *
+   * @returns {Object} with row information, null if nothing found
+   * @throws {DatabaseError} if the query could not be executed
+   */
+  async selectScheduleByIdDb(scheduleID) {
+    const query = `
+      SELECT users.userID, users.username, scheduleID, 
+        datePosted, scheduleTitle, semester, semesterYear
+      FROM users
+      JOIN schedules ON schedules.userID = users.userID AND scheduleID = ?
+    `;
+    try {
+      const [results] = await pool.execute(query, [scheduleID]);
+      return results.length == 0 ? null : results[0];
+    } catch (err) {
+      throw new DatabaseError(500, "Error finding specific schedule.", err);
+    }
+  },
+
+  async selectCoursesOnScheduleDb(scheduleID) {
+    const query = `
+      SELECT courses.courseID, instructor, courseName, startTime, endTime, 
+        monday, tuesday, wednesday, thursday, friday, saturday, sunday
+      FROM schedules
+      JOIN schedule_has_courses ON schedules.scheduleID = schedule_has_courses.scheduleID 
+        AND schedules.scheduleID = 24
+      JOIN courses ON courses.courseID = schedule_has_courses.courseID;
+    `;
+    try {
+      const [results] = await pool.execute(query, [scheduleID]);
+      return results;
+    } catch (err) {
+      throw new DatabaseError(
+        500,
+        "Could not get courses attached to schedule.",
+        err
+      );
+    }
+  },
 };

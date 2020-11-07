@@ -19,10 +19,14 @@ class GeneralError extends Error {
 class BadRequest extends GeneralError {} // Bad Request (400)
 class DatabaseError extends GeneralError {} // Any error within ./models (500)
 class Unauthorized extends GeneralError {} // Unauthorized (401) use when auth fails
+// when resource doesn't exist and is not requested in query param (404)
+// ex: .../schedules/24, where schedule with id of 24 is listed on dashboard but not found
+class NotFound extends GeneralError {}
 
 module.exports = {
   GeneralError,
   BadRequest,
   DatabaseError,
   Unauthorized,
+  NotFound,
 };

@@ -1,6 +1,11 @@
-const {} = require("date-fns");
-const { insertScheduleDb } = require("../db/Schedule");
-const { BadRequest } = require("../utils/errors");
+const {
+  insertScheduleDb,
+  selectAllSchedulesDb,
+  selectScheduleByIdDb,
+  selectCoursesOnScheduleDb,
+} = require("../db/Schedule");
+const { formatCourses } = require("../utils/formatCourses");
+const { BadRequest, NotFound } = require("../utils/errors");
 
 module.exports = {
   /**
@@ -14,6 +19,37 @@ module.exports = {
    */
   async createSchedule(userID, schedule, courses) {
     return await insertScheduleDb(userID, schedule, courses);
+  },
+
+  /**
+   * Again, a wrapper to keep data section separate, gets all schedule entries in DB
+   *
+   * @returns {Array} of all rows returned
+   */
+  async retrieveSchedule() {
+    return await selectAllSchedulesDb();
+  },
+
+  /**
+   * Gets a schedule and its courses given a scheduleID
+   *
+   * @param {Number} scheduleID the id of the schedule to find
+   *
+   * @returns {Object} containing schedule info if found, null if not found
+   * @throws {NotFound} if the schedule was not found
+   */
+  async retrieveScheduleById(scheduleID) {
+    const scheduleInfo = await selectScheduleByIdDb(scheduleID);
+    if (!scheduleInfo) {
+      throw new NotFound(404, "That schedule was not found.", scheduleID);
+    } else {
+      const courseInfo = await selectCoursesOnScheduleDb(scheduleID);
+      formattedInfo = formatCourses(courseInfo);
+      return {
+        ...scheduleInfo,
+        courses: formattedInfo,
+      };
+    }
   },
 
   /**
