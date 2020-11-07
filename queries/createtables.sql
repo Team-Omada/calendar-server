@@ -14,6 +14,7 @@ CREATE TABLE `schedules` (
   `datePosted` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `scheduleTitle` VARCHAR(255) NOT NULL,
   `semester` ENUM('Spring', 'Fall', 'Summer', 'Winter') NOT NULL,
+  `semesterYear` YEAR NOT NULL,
   `userID` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`scheduleID`),
   KEY `userAttached_idx` (`userID`),
