@@ -9,7 +9,9 @@ const {
 module.exports = {
   // creates a schedule with associated course and section info
   async postSchedule(req, res, next) {
-    const { userID, schedule, courses } = req.body;
+    const { scheduleTitle, semester, semesterYear, courses } = req.body;
+    const schedule = { scheduleTitle, semester, semesterYear };
+    const userID = req.userInfo.userID; // userID included in the JWT
     try {
       validateScheduleInfo(schedule);
       validateCourseInfo(courses);

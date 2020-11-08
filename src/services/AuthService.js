@@ -39,10 +39,9 @@ module.exports = {
    * @throws {GeneralError} if token generation happened to fail
    */
   generateJWT(email, username, userID) {
-    // for testing, the token expires in 2 minutes
     try {
       return jwt.sign({ email, username, userID }, process.env.JWT_SECRET, {
-        expiresIn: "120s",
+        expiresIn: "10hr",
       });
     } catch (err) {
       throw new GeneralError(500, "Server error when authorizing.");

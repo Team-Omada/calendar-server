@@ -60,21 +60,18 @@ module.exports = {
    * @throws {BadRequest} if title or semester is not provided or semester formatted wrong
    */
   validateScheduleInfo(schedule) {
-    const {
-      title = "",
-      semesterInfo: { name = "", year = "" },
-    } = schedule;
+    const { scheduleTitle = "", semester = "", semesterYear = "" } = schedule;
     const semesterPattern = /^(Fall|Spring|Summer|Winter)$/;
     // TODO: add title regex if needed?
-    if (!title) {
+    if (!scheduleTitle) {
       throw new BadRequest(400, "A title must be provided.", "titleError");
-    } else if (!year) {
+    } else if (!semesterYear) {
       throw new BadRequest(
         400,
         "A semester year must be provided.",
         "yearError"
       );
-    } else if (!semesterPattern.test(name)) {
+    } else if (!semesterPattern.test(semester)) {
       throw new BadRequest(
         400,
         "A valid semester must be provided.",

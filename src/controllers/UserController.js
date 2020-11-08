@@ -8,6 +8,7 @@ const {
   generateJWT,
   verifyJWT,
 } = require("../services/AuthService");
+const { Unauthorized } = require("../utils/errors");
 
 module.exports = {
   // Validates new user credentials, hashes password, creates user, sends JWT with credentials
@@ -63,6 +64,9 @@ module.exports = {
     try {
       // assumes client will be sending "Bearer ${token}" in header
       // if there is no token, [1] will be an empty string
+      if (!req.headers.authorization) {
+        throw new Unauthorized(401, "Authorization failed.");
+      }
       const token = req.headers.authorization.split(" ")[1];
       const payload = verifyJWT(token);
       req.userInfo = payload; // do something with payload?

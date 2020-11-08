@@ -31,9 +31,9 @@ module.exports = {
     try {
       await transactionConn.query("START TRANSACTION");
       const [insertedSchedule] = await transactionConn.execute(scheduleQuery, [
-        schedule.title,
-        schedule.semesterInfo.name,
-        schedule.semesterInfo.year,
+        schedule.scheduleTitle,
+        schedule.semester,
+        schedule.semesterYear,
         userID,
       ]);
       await insertCoursesDb(transactionConn, courses);
@@ -107,7 +107,7 @@ module.exports = {
         monday, tuesday, wednesday, thursday, friday, saturday, sunday
       FROM schedules
       JOIN schedule_has_courses ON schedules.scheduleID = schedule_has_courses.scheduleID 
-        AND schedules.scheduleID = 24
+        AND schedules.scheduleID = ?
       JOIN courses ON courses.courseID = schedule_has_courses.courseID;
     `;
     try {

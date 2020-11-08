@@ -8,9 +8,27 @@ router.post("/login", UserController.login);
 
 // IMPORTANT: all of these routes should be authenticated
 // some of these look a bit complicated, but I think this follows REST standards
-router.post("/schedules", ScheduleController.postSchedule); // create a schedule
-router.get("/schedules", ScheduleController.getSchedules); // get all schedules
-router.get("/schedules/:scheduleID", ScheduleController.getScheduleId); // get a specific schedule
+
+// create a schedule
+router.post(
+  "/schedules",
+  UserController.checkAuthenticated,
+  ScheduleController.postSchedule
+);
+
+// get all schedules
+router.get(
+  "/schedules",
+  UserController.checkAuthenticated,
+  ScheduleController.getSchedules
+);
+
+// get a specific schedule
+router.get(
+  "/schedules/:scheduleID",
+  UserController.checkAuthenticated,
+  ScheduleController.getScheduleId
+);
 router.delete("/schedules/:scheduleID"); // delete a specific schedule
 router.put("/schedules/:scheduleID"); // update a specific schedule
 
