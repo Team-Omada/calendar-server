@@ -93,6 +93,13 @@ module.exports = {
     const courseIdPattern = /^[A-Z]{2,4}[0-9]{3}$/;
     const timePattern = /^([01][0-9]|2[0-3]):([0-5][0-9])$/;
     const dayPattern = /^(mon|tues|wednes|thurs|fri|satur|sun){1}(day){1}$/;
+
+    // if there are duplicate courses, throw an error
+    // there could be reason for duplicates (waitlist), however it does not work for our DB model
+    const allCourseIds = courses.map((course) => course.courseID);
+    if (courses.length !== new Set(allCourseIds).size) {
+      throw new BadRequest(400, "Courses should be unique!");
+    }
     courses.forEach((course) => {
       const {
         courseID = "",
@@ -112,13 +119,13 @@ module.exports = {
         throw new BadRequest(
           400,
           `Missing info for course: ${courseID}`,
-          "missingError"
+          courseID
         );
       } else if (!timePattern.test(startTime) || !timePattern.test(endTime)) {
         throw new BadRequest(
           400,
           `Times are not correctly formatted for course: ${courseID}`,
-          "timeError"
+          courseID
         );
       } else {
         days.forEach((day) => {
@@ -126,7 +133,7 @@ module.exports = {
             throw new BadRequest(
               400,
               "One or more days formatted wrong.",
-              "daysError"
+              courseID
             );
           }
         });
