@@ -43,7 +43,7 @@ module.exports = {
     try {
       const results = await retrieveScheduleById(scheduleID);
       res.send({
-        results,
+        ...results,
       });
     } catch (err) {
       next(err);

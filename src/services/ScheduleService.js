@@ -39,15 +39,21 @@ module.exports = {
    * @throws {NotFound} if the schedule was not found
    */
   async retrieveScheduleById(scheduleID) {
-    const scheduleInfo = await selectScheduleByIdDb(scheduleID);
-    if (!scheduleInfo) {
+    const results = await selectScheduleByIdDb(scheduleID);
+    const scheduleInfo = results[0]; // used for extracting schedule/user info
+    if (!results) {
       throw new NotFound(404, "That schedule was not found.", scheduleID);
     } else {
-      const courseInfo = await selectCoursesOnScheduleDb(scheduleID);
-      formattedInfo = formatCourses(courseInfo);
+      const formattedCourses = formatCourses(results);
       return {
-        ...scheduleInfo,
-        courses: formattedInfo,
+        userID: scheduleInfo.userID,
+        username: scheduleInfo.username,
+        scheduleID: scheduleInfo.scheduleID,
+        datePosted: scheduleInfo.datePosted,
+        scheduleTitle: scheduleInfo.scheduleTitle,
+        semester: scheduleInfo.semester,
+        semesterYear: scheduleInfo.semesterYear,
+        courses: formattedCourses,
       };
     }
   },
