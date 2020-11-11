@@ -32,7 +32,7 @@ router.get(
 router.delete("/schedules/:scheduleID"); // delete a specific schedule
 router.put("/schedules/:scheduleID"); // update a specific schedule
 
-router.get("/comments/:userID"); // get all comments from a user (not sure when we'll need this)
+router.get("/schedules/:scheduleID/comments"); // get all comments from a particular schedule
 router.post("/schedules/:scheduleID/comments"); // add a comment to a schedule
 router.put("/schedules/:scheduleID/comments/:commentID"); // update an existing comment
 router.delete("/schedules/:scheduleID/comments/:commentID"); // delete a comment from a schedule
