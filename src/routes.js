@@ -27,9 +27,15 @@ router.get(
 router.get(
   "/schedules/:scheduleID",
   UserController.checkAuthenticated,
-  ScheduleController.getScheduleId
+  ScheduleController.getScheduleById
 );
-router.delete("/schedules/:scheduleID"); // delete a specific schedule
+
+// delete a specific schedule
+router.delete(
+  "/schedules/:scheduleID",
+  UserController.checkAuthenticated,
+  ScheduleController.deleteSchedule
+);
 router.put("/schedules/:scheduleID"); // update a specific schedule
 
 router.get("/schedules/:scheduleID/comments"); // get all comments from a particular schedule
@@ -40,12 +46,5 @@ router.delete("/schedules/:scheduleID/comments/:commentID"); // delete a comment
 router.get("/bookmarks/:userID"); // get bookmarks for a specific userID
 router.post("/bookmarks"); // add a new bookmark
 router.delete("/bookmarks/:userID/schedules/:scheduleID"); // delete a specific bookmark
-
-// sample of how we would use checkAuthenticated function
-// checkAuthenticated runs before the res.send() call
-// if auth fails, the res.send() will never be reached
-router.get("/home", UserController.checkAuthenticated, (req, res) => {
-  res.send({ message: "You are authorized to see this!" });
-});
 
 module.exports = router;

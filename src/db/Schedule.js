@@ -106,4 +106,25 @@ module.exports = {
       throw new DatabaseError(500, "Error finding specific schedule.", err);
     }
   },
+
+  /**
+   * Deletes a schedule provided userID and scheduleID are correct
+   *
+   * @param {Number} userID of user making request
+   * @param {Number} scheduleID of schedule to delete
+   *
+   * @returns {Number} of rows deleted (1 if success, 0 if not)
+   * @throws {DatabaseError} if the query failed
+   */
+  async deleteScheduleDb(userID, scheduleID) {
+    const query = `
+      DELETE FROM schedules WHERE userID = ? AND scheduleID = ?;
+    `;
+    try {
+      const [results] = await pool.execute(query, [userID, scheduleID]);
+      return results.affectedRows;
+    } catch (err) {
+      throw new DatabaseError(500, "Error when deleting schedule.", err);
+    }
+  },
 };

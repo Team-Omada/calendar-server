@@ -4,6 +4,7 @@ const {
   validateCourseInfo,
   retrieveSchedule,
   retrieveScheduleById,
+  removeSchedule,
 } = require("../services/ScheduleService");
 
 module.exports = {
@@ -38,13 +39,25 @@ module.exports = {
   },
 
   // gets schedule given a specific ID
-  async getScheduleId(req, res, next) {
+  async getScheduleById(req, res, next) {
     const { scheduleID } = req.params;
     try {
       const results = await retrieveScheduleById(scheduleID);
       res.send({
         ...results,
       });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // deletes a schedule given a scheduleID
+  async deleteSchedule(req, res, next) {
+    const { scheduleID } = req.params;
+    const userID = req.userInfo.userID; // retrieved from JWT
+    try {
+      await removeSchedule(userID, scheduleID);
+      res.sendStatus(204);
     } catch (err) {
       next(err);
     }

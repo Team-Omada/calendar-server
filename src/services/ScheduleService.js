@@ -2,7 +2,7 @@ const {
   insertScheduleDb,
   selectAllSchedulesDb,
   selectScheduleByIdDb,
-  selectCoursesOnScheduleDb,
+  deleteScheduleDb,
 } = require("../db/Schedule");
 const { formatCourses } = require("../utils/formatCourses");
 const { BadRequest, NotFound } = require("../utils/errors");
@@ -28,6 +28,19 @@ module.exports = {
    */
   async retrieveSchedule() {
     return await selectAllSchedulesDb();
+  },
+
+  /**
+   * Deletes schedule only if user is the owner
+   *
+   * @param {Number} userID of user making the delete request
+   * @param {Number} scheduleID of schedule to delete
+   *
+   * @throws {NotFound} if the delete fails
+   */
+  async removeSchedule(userID, scheduleID) {
+    if ((await deleteScheduleDb(userID, scheduleID)) > 0) return;
+    else throw new NotFound(404, "Unauthorized or schedule doesn't exist.");
   },
 
   /**
