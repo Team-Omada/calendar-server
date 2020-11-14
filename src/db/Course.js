@@ -9,13 +9,13 @@ module.exports = {
    * @param {Array} courses contains all info on the courses for this schedule
    */
   async insertCoursesDb(transactionConn, courses) {
-    // [[courseID, courseName],...,]
+    // [[courseID],...,]
     const courseInfo = courses.map((course) => {
-      return [course.courseID, course.courseName];
+      return [course.courseID];
     });
     // must format before using execute function
     const query = mysql.format(
-      `INSERT IGNORE INTO courses (courseID, courseName) VALUES ?`,
+      `INSERT IGNORE INTO courses (courseID) VALUES ?`,
       [courseInfo]
     );
     await transactionConn.execute(query);

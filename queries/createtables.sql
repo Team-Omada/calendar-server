@@ -24,7 +24,6 @@ CREATE TABLE `schedules` (
 
 CREATE TABLE `courses` (
   `courseID` VARCHAR(45) NOT NULL,
-  `courseName` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`courseID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -45,6 +44,7 @@ CREATE TABLE `comments` (
 
 CREATE TABLE `schedule_has_courses` (
   `courseID` VARCHAR(45) NOT NULL,
+  `courseName` VARCHAR(100) NOT NULL,
   `scheduleID` INT UNSIGNED NOT NULL,
   `instructor` VARCHAR(45) NOT NULL,
   `startTime` VARCHAR(5) NOT NULL,

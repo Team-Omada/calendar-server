@@ -23,6 +23,7 @@ module.exports = {
       let rows = [
         scheduleID,
         course.courseID,
+        course.courseName,
         course.instructor,
         course.startTime,
         course.endTime,
@@ -39,7 +40,7 @@ module.exports = {
     const query = mysql.format(
       `
         INSERT INTO schedule_has_courses 
-        (scheduleID, courseID, instructor, startTime, endTime, 
+        (scheduleID, courseID, courseName, instructor, startTime, endTime, 
           monday, tuesday, wednesday, thursday, friday, saturday, sunday)
         VALUES ?
       `,
