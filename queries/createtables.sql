@@ -1,3 +1,5 @@
+-- DROP TABLES users_bookmark_schedules, schedule_has_courses, comments, courses, schedules, users;
+
 CREATE TABLE `users` (
   `userID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(20) NOT NULL,
@@ -55,7 +57,7 @@ CREATE TABLE `schedule_has_courses` (
   `thursday` tinyint(1) NOT NULL,
   `friday` tinyint(1) NOT NULL,
   `saturday` tinyint(1) NOT NULL,
-  `sunday` tinyint(1) NOT NULL;
+  `sunday` tinyint(1) NOT NULL,
   PRIMARY KEY (`courseID`,`scheduleID`),
   CONSTRAINT `FK_has_courses_courseID` FOREIGN KEY (`courseID`) REFERENCES `courses` (`courseID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_has_schedules_scheduleID` FOREIGN KEY (`scheduleID`) REFERENCES `schedules` (`scheduleID`) ON DELETE CASCADE ON UPDATE CASCADE
