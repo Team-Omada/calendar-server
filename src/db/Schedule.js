@@ -1,6 +1,6 @@
 const pool = require("../utils/connection");
 const { insertCoursesDb } = require("./Course");
-const { insertSectionsDb } = require("./Section");
+const { insertSectionsDb, deleteSectionsOnScheduleDb } = require("./Section");
 const { DatabaseError } = require("../utils/errors");
 
 module.exports = {
@@ -49,6 +49,54 @@ module.exports = {
       throw new DatabaseError(
         500,
         "There was an issue creating your schedule.",
+        err
+      );
+    } finally {
+      await transactionConn.release();
+    }
+  },
+
+  /**
+   * Starts a MySQL transaction to update schedule similar to insert above
+   * This is very slow since we are deleting and resinserting course data on every put request
+   * The simplest way to handle for now without writing individual patch routes and changing frontend
+   *
+   * @param {Number} userID of user requesting update
+   * @param {Number} scheduleID of schedule to update
+   * @param {Object} schedule all base info for a schedule
+   * @param {Array} courses for all courses to replace in schedule
+   */
+  async updateScheduleDb(userID, scheduleID, schedule, courses) {
+    let transactionConn;
+    try {
+      transactionConn = await pool.getConnection();
+    } catch (err) {
+      throw DatabaseError(500, "Could not connect to database.", err);
+    }
+
+    const scheduleQuery = `
+      UPDATE schedules
+      SET scheduleTitle = ?, semester = ?, semesterYear = ?
+      WHERE scheduleID = ? AND userID = ?;
+    `;
+    try {
+      await transactionConn.query("START TRANSACTION");
+      await transactionConn.execute(scheduleQuery, [
+        schedule.scheduleTitle,
+        schedule.semester,
+        schedule.semesterYear,
+        scheduleID,
+        userID,
+      ]);
+      await deleteSectionsOnScheduleDb(transactionConn, scheduleID);
+      await insertCoursesDb(transactionConn, courses);
+      await insertSectionsDb(transactionConn, courses, scheduleID);
+      await transactionConn.query("COMMIT");
+    } catch (err) {
+      await transactionConn.query("ROLLBACK");
+      throw new DatabaseError(
+        500,
+        "There was an issue updating your schedule.",
         err
       );
     } finally {
@@ -125,6 +173,31 @@ module.exports = {
       return results.affectedRows;
     } catch (err) {
       throw new DatabaseError(500, "Error when deleting schedule.", err);
+    }
+  },
+
+  /**
+   * Helper query to check if particular schedule belongs to a specific user
+   *
+   * @param {Number} userID of user making request
+   * @param {Number} scheduleID of schedule to check for ownership
+   *
+   * @returns {Number} length of results, so 1 if found, 0 if not found
+   * @throws {DatabaseError} if the query failed
+   */
+  async checkScheduleExistsDb(userID, scheduleID) {
+    const query = `
+      SELECT 1 FROM schedules WHERE userID = ? AND scheduleID = ?
+    `;
+    try {
+      const [results] = await pool.execute(query, [userID, scheduleID]);
+      return results.length;
+    } catch (err) {
+      throw new DatabaseError(
+        500,
+        "Error when checking schedule existence.",
+        err
+      );
     }
   },
 };

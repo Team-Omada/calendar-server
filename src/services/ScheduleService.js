@@ -3,6 +3,8 @@ const {
   selectAllSchedulesDb,
   selectScheduleByIdDb,
   deleteScheduleDb,
+  updateScheduleDb,
+  checkScheduleExistsDb,
 } = require("../db/Schedule");
 const { formatCourses } = require("../utils/formatCourses");
 const { BadRequest, NotFound } = require("../utils/errors");
@@ -28,6 +30,12 @@ module.exports = {
    */
   async retrieveSchedule() {
     return await selectAllSchedulesDb();
+  },
+
+  async updateSchedule(userID, scheduleID, schedule, courses) {
+    if ((await checkScheduleExistsDb(userID, scheduleID)) > 0) {
+      await updateScheduleDb(userID, scheduleID, schedule, courses);
+    } else throw new NotFound(404, "Unauthorized or schedule doesn't exist.");
   },
 
   /**

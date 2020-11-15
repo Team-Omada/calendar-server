@@ -1,4 +1,5 @@
 const mysql = require("mysql2");
+const { formatDaysForDb } = require("../utils/formatCourses");
 
 module.exports = {
   /**
@@ -48,5 +49,12 @@ module.exports = {
     );
     await transactionConn.execute(query);
     // error handled in caller with transactionConn
+  },
+
+  async deleteSectionsOnScheduleDb(transactionConn, scheduleID) {
+    await transactionConn.execute(
+      `DELETE FROM schedule_has_courses WHERE scheduleID = ?`,
+      [scheduleID]
+    );
   },
 };

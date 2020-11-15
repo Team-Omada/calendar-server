@@ -36,7 +36,13 @@ router.delete(
   UserController.checkAuthenticated,
   ScheduleController.deleteSchedule
 );
-router.put("/schedules/:scheduleID"); // update a specific schedule
+
+// update a specific schedule
+router.put(
+  "/schedules/:scheduleID",
+  UserController.checkAuthenticated,
+  ScheduleController.putSchedule
+);
 
 router.get("/schedules/:scheduleID/comments"); // get all comments from a particular schedule
 router.post("/schedules/:scheduleID/comments"); // add a comment to a schedule

@@ -5,6 +5,7 @@ const {
   retrieveSchedule,
   retrieveScheduleById,
   removeSchedule,
+  updateSchedule,
 } = require("../services/ScheduleService");
 
 module.exports = {
@@ -46,6 +47,20 @@ module.exports = {
       res.send({
         ...results,
       });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // updates a schedule given a scheduleID
+  async putSchedule(req, res, next) {
+    const { scheduleID } = req.params;
+    const { scheduleTitle, semester, semesterYear, courses } = req.body;
+    const schedule = { scheduleTitle, semester, semesterYear };
+    const userID = req.userInfo.userID;
+    try {
+      await updateSchedule(userID, scheduleID, schedule, courses);
+      res.sendStatus(204); // no need to return body from put
     } catch (err) {
       next(err);
     }
