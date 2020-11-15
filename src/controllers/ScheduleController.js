@@ -2,7 +2,7 @@ const {
   createSchedule,
   validateScheduleInfo,
   validateCourseInfo,
-  retrieveSchedule,
+  retrieveSchedules,
   retrieveScheduleById,
   removeSchedule,
   updateSchedule,
@@ -30,7 +30,7 @@ module.exports = {
   // gets all schedules with associated user info
   async getSchedules(req, res, next) {
     try {
-      const results = await retrieveSchedule();
+      const results = await retrieveSchedules();
       res.send({
         results,
       });

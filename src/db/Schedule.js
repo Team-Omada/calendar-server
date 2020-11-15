@@ -105,18 +105,22 @@ module.exports = {
   },
 
   /**
-   * Retrieves all schedules with user info and schedule info
+   * Retrieves all schedules with user info and schedule info (limit 10)
    *
-   * @returns {Array} with all schedule rows
+   * @returns {Array} with 10 schedule rows
    * @throws {DatabaseError} if the query could not be executed
    */
   async selectAllSchedulesDb() {
     const query = `
-      SELECT users.userID, users.username, scheduleID, 
-        datePosted, scheduleTitle, semester, semesterYear
-      FROM users
-      JOIN schedules ON schedules.userID = users.userID
-      ORDER BY datePosted DESC LIMIT 10;
+    SELECT users.userID, users.username, users.email, schedules.scheduleID, 
+      datePosted, scheduleTitle, semester, semesterYear, 
+      GROUP_CONCAT(schedule_has_courses.courseID SEPARATOR ', ') as days
+    FROM users
+    JOIN schedules ON schedules.userID = users.userID
+    JOIN schedule_has_courses ON schedules.scheduleID = schedule_has_courses.scheduleID
+    GROUP BY schedules.scheduleID
+    ORDER BY schedules.datePosted DESC
+    LIMIT 10
     `;
     try {
       const [results] = await pool.query(query);

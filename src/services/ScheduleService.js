@@ -28,7 +28,7 @@ module.exports = {
    *
    * @returns {Array} of all rows returned
    */
-  async retrieveSchedule() {
+  async retrieveSchedules() {
     return await selectAllSchedulesDb();
   },
 
