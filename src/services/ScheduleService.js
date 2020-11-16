@@ -61,10 +61,10 @@ module.exports = {
    */
   async retrieveScheduleById(scheduleID) {
     const results = await selectScheduleByIdDb(scheduleID);
-    const scheduleInfo = results[0]; // used for extracting schedule/user info
     if (!results) {
       throw new NotFound(404, "That schedule was not found.", scheduleID);
     } else {
+      const scheduleInfo = results[0]; // used for extracting schedule/user info
       const formattedCourses = formatCourses(results);
       return {
         userID: scheduleInfo.userID,
