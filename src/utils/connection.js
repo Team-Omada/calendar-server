@@ -9,6 +9,7 @@ const pool = mysql.createPool({
   password: process.env.RDS_PASSWORD,
   port: process.env.RDS_PORT,
   database: process.env.RDS_DB_NAME,
+  timezone: "Z",
 });
 
 // convert pool to allow queries to use await/sync
