@@ -114,7 +114,7 @@ module.exports = {
     const query = `
     SELECT users.userID, users.username, users.email, schedules.scheduleID, 
       datePosted, scheduleTitle, semester, semesterYear, 
-      GROUP_CONCAT(schedule_has_courses.courseID SEPARATOR ', ') as days
+      GROUP_CONCAT(schedule_has_courses.courseID SEPARATOR ', ') as courses
     FROM users
     JOIN schedules ON schedules.userID = users.userID
     JOIN schedule_has_courses ON schedules.scheduleID = schedule_has_courses.scheduleID
