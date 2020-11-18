@@ -24,4 +24,27 @@ module.exports = {
       throw new DatabaseError(500, "Could not post comment.", err);
     }
   },
+
+  /**
+   * Gets all comments on a particular schedule
+   *
+   * @param {Number} scheduleID of schedule to retrieve comments from
+   *
+   * @returns {Array} of all comments, empty array for no comments or schedule not found
+   * @throws {DatabaseError} if the query fails
+   */
+  async selectAllScheduleCommentsDb(scheduleID) {
+    const query = `
+      SELECT username, email, text, datePosted
+      FROM comments
+      JOIN users ON comments.userID = users.userID AND scheduleID = ?
+      ORDER BY datePosted;
+    `;
+    try {
+      const [results] = await pool.execute(query, [scheduleID]);
+      return results;
+    } catch (err) {
+      throw new DatabaseError(500, "Error fetching comments.");
+    }
+  },
 };

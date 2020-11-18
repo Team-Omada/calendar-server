@@ -1,4 +1,7 @@
-const { insertCommentDb } = require("../db/Comment");
+const {
+  insertCommentDb,
+  selectAllScheduleCommentsDb,
+} = require("../db/Comment");
 const { BadRequest } = require("../utils/errors");
 
 module.exports = {
@@ -13,6 +16,17 @@ module.exports = {
    */
   async createComment(userID, scheduleID, text) {
     return await insertCommentDb(userID, scheduleID, text);
+  },
+
+  /**
+   * Another wrapper for selecting all comments on a schedule
+   *
+   * @param {Number} scheduleID of schedule to get comments from
+   *
+   * @returns {Array} of all comments, empty array if schedule doesn't exist
+   */
+  async retrieveComments(scheduleID) {
+    return await selectAllScheduleCommentsDb(scheduleID);
   },
 
   /**

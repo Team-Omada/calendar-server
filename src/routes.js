@@ -46,7 +46,11 @@ router.put(
 );
 
 // get all comments from a particular schedule
-router.get("/schedules/:scheduleID/comments");
+router.get(
+  "/schedules/:scheduleID/comments",
+  UserController.checkAuthenticated,
+  CommentController.getComments
+);
 
 // add a comment to a schedule
 router.post(
