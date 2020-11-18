@@ -59,6 +59,8 @@ module.exports = {
     const schedule = { scheduleTitle, semester, semesterYear };
     const userID = req.userInfo.userID;
     try {
+      validateScheduleInfo(schedule);
+      validateCourseInfo(courses);
       await updateSchedule(userID, scheduleID, schedule, courses);
       res.sendStatus(204); // no need to return body from put
     } catch (err) {

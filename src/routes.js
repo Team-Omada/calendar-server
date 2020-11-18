@@ -7,7 +7,7 @@ const CommentController = require("./controllers/CommentController");
 router.post("/register", UserController.register);
 router.post("/login", UserController.login);
 
-// IMPORTANT: all of these routes should be authenticated
+// IMPORTANT: all of these routes should be authenticated, but this could change
 // some of these look a bit complicated, but I think this follows REST standards
 
 // create a schedule
@@ -58,7 +58,13 @@ router.post(
   UserController.checkAuthenticated,
   CommentController.postComment
 );
-router.put("/schedules/:scheduleID/comments/:commentID"); // update an existing comment
+
+// update an existing comment
+router.put(
+  "/schedules/:scheduleID/comments/:commentID",
+  UserController.checkAuthenticated,
+  CommentController.putComment
+);
 
 // delete a comment from a schedule
 router.delete(

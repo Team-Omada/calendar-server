@@ -74,4 +74,34 @@ module.exports = {
       throw new DatabaseError(500, "Error deleting comment.");
     }
   },
+
+  /**
+   * Updates a comment on a schedule given that the user owns that comment
+   *
+   * @param {Number} userID of user trying to edit comment
+   * @param {Number} scheduleID of schedule update is occuring on
+   * @param {Number} commentID of comment to edit
+   * @param {String} text validated comment to update
+   *
+   * @returns {Number} of rows updated (1 if success, 0 if not)
+   * @throws {DatabaseError} if the query fails
+   */
+  async updateCommentDb(userID, scheduleID, commentID, text) {
+    const query = `
+      UPDATE comments
+      SET text = ?
+      WHERE userID = ? AND scheduleID = ? AND commentID = ?
+    `;
+    try {
+      const [results] = await pool.execute(query, [
+        text,
+        userID,
+        scheduleID,
+        commentID,
+      ]);
+      return results.affectedRows;
+    } catch (err) {
+      throw new DatabaseError(500, "Error updating comment.");
+    }
+  },
 };

@@ -3,6 +3,7 @@ const {
   validateComment,
   retrieveComments,
   removeComment,
+  updateComment,
 } = require("../services/CommentService");
 
 module.exports = {
@@ -42,6 +43,20 @@ module.exports = {
     const { userID } = req.userInfo;
     try {
       await removeComment(userID, scheduleID, commentID);
+      res.sendStatus(204);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // updates a comment attached to a schedule only if the comment is owned by request
+  async putComment(req, res, next) {
+    const { commentID, scheduleID } = req.params;
+    const { text } = req.body;
+    const { userID } = req.userInfo;
+    try {
+      validateComment(text);
+      await updateComment(userID, scheduleID, commentID, text);
       res.sendStatus(204);
     } catch (err) {
       next(err);
