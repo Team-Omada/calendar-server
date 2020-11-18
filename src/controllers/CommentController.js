@@ -2,6 +2,7 @@ const {
   createComment,
   validateComment,
   retrieveComments,
+  removeComment,
 } = require("../services/CommentService");
 
 module.exports = {
@@ -30,6 +31,18 @@ module.exports = {
       res.send({
         results,
       });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // deletes a comment attached to schedule only if comment is owned by request
+  async deleteComment(req, res, next) {
+    const { commentID, scheduleID } = req.params;
+    const { userID } = req.userInfo;
+    try {
+      await removeComment(userID, scheduleID, commentID);
+      res.sendStatus(204);
     } catch (err) {
       next(err);
     }

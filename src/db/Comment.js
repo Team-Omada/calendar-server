@@ -47,4 +47,31 @@ module.exports = {
       throw new DatabaseError(500, "Error fetching comments.");
     }
   },
+
+  /**
+   * Deletes a comment from a schedule given that user owns that comment
+   *
+   * @param {Number} userID of user requesting deletion
+   * @param {Number} scheduleID of schedule to delete from
+   * @param {Number} commentID of comment to delete
+   *
+   * @returns {Number} of rows deleted (1 if success, 0 if not)
+   * @throws {DatabaseError} if the query fails
+   */
+  async deleteCommentDb(userID, scheduleID, commentID) {
+    const query = `
+      DELETE FROM comments
+      WHERE userID = ? AND scheduleID = ? AND commentID = ?
+    `;
+    try {
+      const [results] = await pool.execute(query, [
+        userID,
+        scheduleID,
+        commentID,
+      ]);
+      return results.affectedRows;
+    } catch (err) {
+      throw new DatabaseError(500, "Error deleting comment.");
+    }
+  },
 };

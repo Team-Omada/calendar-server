@@ -1,8 +1,9 @@
 const {
   insertCommentDb,
   selectAllScheduleCommentsDb,
+  deleteCommentDb,
 } = require("../db/Comment");
-const { BadRequest } = require("../utils/errors");
+const { BadRequest, NotFound } = require("../utils/errors");
 
 module.exports = {
   /**
@@ -27,6 +28,20 @@ module.exports = {
    */
   async retrieveComments(scheduleID) {
     return await selectAllScheduleCommentsDb(scheduleID);
+  },
+
+  /**
+   * Deletes a comment from a schedule given that user owns that comment
+   *
+   * @param {Number} userID of user requesting deletion
+   * @param {Number} scheduleID of schedule to delete from
+   * @param {Number} commentID of comment to delete
+   *
+   * @throws {NotFound} if the user doesn't own the comment or it doesn't exist
+   */
+  async removeComment(userID, scheduleID, commentID) {
+    if ((await deleteCommentDb(userID, scheduleID, commentID)) > 0) return;
+    else throw new NotFound(404, "Unauthorized or comment doesn't exist.");
   },
 
   /**

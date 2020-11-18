@@ -59,7 +59,13 @@ router.post(
   CommentController.postComment
 );
 router.put("/schedules/:scheduleID/comments/:commentID"); // update an existing comment
-router.delete("/schedules/:scheduleID/comments/:commentID"); // delete a comment from a schedule
+
+// delete a comment from a schedule
+router.delete(
+  "/schedules/:scheduleID/comments/:commentID",
+  UserController.checkAuthenticated,
+  CommentController.deleteComment
+);
 
 router.get("/bookmarks/:userID"); // get bookmarks for a specific userID
 router.post("/bookmarks"); // add a new bookmark
