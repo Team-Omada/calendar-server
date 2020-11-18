@@ -21,7 +21,7 @@ module.exports = {
     try {
       transactionConn = await pool.getConnection();
     } catch (err) {
-      throw DatabaseError(500, "Could not connect to database.", err);
+      throw new DatabaseError(500, "Could not connect to database.");
     }
 
     const scheduleQuery = `
@@ -48,8 +48,7 @@ module.exports = {
       await transactionConn.query("ROLLBACK");
       throw new DatabaseError(
         500,
-        "There was an issue creating your schedule.",
-        err
+        "There was an issue creating your schedule."
       );
     } finally {
       await transactionConn.release();
@@ -71,7 +70,7 @@ module.exports = {
     try {
       transactionConn = await pool.getConnection();
     } catch (err) {
-      throw DatabaseError(500, "Could not connect to database.", err);
+      throw new DatabaseError(500, "Could not connect to database.");
     }
 
     const scheduleQuery = `
@@ -96,8 +95,7 @@ module.exports = {
       await transactionConn.query("ROLLBACK");
       throw new DatabaseError(
         500,
-        "There was an issue updating your schedule.",
-        err
+        "There was an issue updating your schedule."
       );
     } finally {
       await transactionConn.release();
@@ -126,7 +124,7 @@ module.exports = {
       const [results] = await pool.query(query);
       return results;
     } catch (err) {
-      throw new DatabaseError(500, "Error fetching schedules.", err);
+      throw new DatabaseError(500, "Error fetching schedules.");
     }
   },
 
@@ -155,7 +153,7 @@ module.exports = {
       const [results] = await pool.execute(query, [scheduleID, scheduleID]);
       return results.length == 0 ? null : results;
     } catch (err) {
-      throw new DatabaseError(500, "Error finding specific schedule.", err);
+      throw new DatabaseError(500, "Error finding specific schedule.");
     }
   },
 
@@ -176,7 +174,7 @@ module.exports = {
       const [results] = await pool.execute(query, [userID, scheduleID]);
       return results.affectedRows;
     } catch (err) {
-      throw new DatabaseError(500, "Error when deleting schedule.", err);
+      throw new DatabaseError(500, "Error when deleting schedule.");
     }
   },
 
@@ -197,11 +195,7 @@ module.exports = {
       const [results] = await pool.execute(query, [userID, scheduleID]);
       return results.length;
     } catch (err) {
-      throw new DatabaseError(
-        500,
-        "Error when checking schedule existence.",
-        err
-      );
+      throw new DatabaseError(500, "Error when checking schedule existence.");
     }
   },
 };

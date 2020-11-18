@@ -13,7 +13,7 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const router = require("./routes");
-const handleErrors = require("./utils/handleErrors");
+const { handleErrors } = require("./utils/errors");
 const app = express();
 
 app.use(cors());

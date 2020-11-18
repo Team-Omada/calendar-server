@@ -20,11 +20,7 @@ module.exports = {
       const [results] = await pool.execute(query, [email, username, passhash]);
       return results.insertId;
     } catch (err) {
-      throw new DatabaseError(
-        500,
-        "There was an issue creating your account!",
-        err
-      );
+      throw new DatabaseError(500, "There was an issue creating your account!");
     }
   },
 
@@ -47,8 +43,7 @@ module.exports = {
     } catch (err) {
       throw new DatabaseError(
         500,
-        "There was an issue creating your new account!",
-        err
+        "There was an issue creating your new account!"
       );
     }
   },
@@ -67,7 +62,7 @@ module.exports = {
       const [results] = await pool.execute(query, [email]);
       return results.length == 0 ? null : results[0];
     } catch (err) {
-      throw new DatabaseError(500, "There was an issue logging you in.", err);
+      throw new DatabaseError(500, "There was an issue logging you in.");
     }
   },
 };

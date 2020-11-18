@@ -29,4 +29,12 @@ module.exports = {
   DatabaseError,
   Unauthorized,
   NotFound,
+  handleErrors(err, req, res, next) {
+    console.log(err);
+    // all errors can be handled like this for now
+    return res.status(err.status).send({
+      message: err.message,
+      info: err.info,
+    });
+  },
 };

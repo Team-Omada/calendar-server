@@ -21,7 +21,7 @@ module.exports = {
       const [results] = await pool.execute(query, [userID, scheduleID, text]);
       return results.insertId;
     } catch (err) {
-      throw new DatabaseError(500, "Could not post comment.", err);
+      throw new DatabaseError(500, "Could not post comment.");
     }
   },
 
