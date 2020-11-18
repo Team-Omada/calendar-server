@@ -6,7 +6,7 @@ const {
   updateScheduleDb,
   checkScheduleExistsDb,
 } = require("../db/Schedule");
-const { formatCourses } = require("../utils/formatCourses");
+const { formatCourses } = require("../utils/formatters");
 const { BadRequest, NotFound } = require("../utils/errors");
 
 module.exports = {

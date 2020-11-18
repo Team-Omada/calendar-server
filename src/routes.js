@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const UserController = require("./controllers/UserController");
 const ScheduleController = require("./controllers/ScheduleController");
+const CommentController = require("./controllers/CommentController");
 
 router.post("/register", UserController.register);
 router.post("/login", UserController.login);
@@ -44,8 +45,15 @@ router.put(
   ScheduleController.putSchedule
 );
 
-router.get("/schedules/:scheduleID/comments"); // get all comments from a particular schedule
-router.post("/schedules/:scheduleID/comments"); // add a comment to a schedule
+// get all comments from a particular schedule
+router.get("/schedules/:scheduleID/comments");
+
+// add a comment to a schedule
+router.post(
+  "/schedules/:scheduleID/comments",
+  UserController.checkAuthenticated,
+  CommentController.postComment
+);
 router.put("/schedules/:scheduleID/comments/:commentID"); // update an existing comment
 router.delete("/schedules/:scheduleID/comments/:commentID"); // delete a comment from a schedule
 

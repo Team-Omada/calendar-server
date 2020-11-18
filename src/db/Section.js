@@ -1,5 +1,4 @@
 const mysql = require("mysql2");
-const { formatDaysForDb } = require("../utils/formatCourses");
 
 module.exports = {
   /**
