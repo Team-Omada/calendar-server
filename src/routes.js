@@ -3,12 +3,13 @@ const router = express.Router();
 const UserController = require("./controllers/UserController");
 const ScheduleController = require("./controllers/ScheduleController");
 const CommentController = require("./controllers/CommentController");
+const BookmarkController = require("./controllers/BookmarkController");
 
 router.post("/register", UserController.register);
 router.post("/login", UserController.login);
 
 // IMPORTANT: all of these routes should be authenticated, but this could change
-// some of these look a bit complicated, but I think this follows REST standards
+// some of these look a bit complicated, but I think this follows REST standards (except for bookmarks)
 
 // create a schedule
 router.post(
@@ -73,8 +74,26 @@ router.delete(
   CommentController.deleteComment
 );
 
-router.get("/bookmarks/:userID"); // get bookmarks for a specific userID
-router.post("/bookmarks"); // add a new bookmark
-router.delete("/bookmarks/:userID/schedules/:scheduleID"); // delete a specific bookmark
+// I'm pretty sure these dont' follow REST standards?
+// get all bookmarks, grabs userID from token to determine ownership
+router.get(
+  "/bookmarks",
+  UserController.checkAuthenticated,
+  BookmarkController.getBookmarks
+);
+
+// add a new bookmark
+router.post(
+  "/bookmarks/:scheduleID",
+  UserController.checkAuthenticated,
+  BookmarkController.postBookmark
+);
+
+// delete a specific bookmark, grabs userID from token to determine ownership
+router.delete(
+  "/bookmarks/:scheduleID",
+  UserController.checkAuthenticated,
+  BookmarkController.deleteBookmark
+);
 
 module.exports = router;
