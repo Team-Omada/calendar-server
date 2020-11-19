@@ -26,10 +26,12 @@ module.exports = {
   /**
    * Again, a wrapper to keep data section separate, gets all schedule entries in DB
    *
+   * @param {Number} userID of the user making request to grab all bookmarked schedules
+   *
    * @returns {Array} of all rows returned
    */
-  async retrieveSchedules() {
-    return await selectAllSchedulesDb();
+  async retrieveSchedules(userID = 0) {
+    return await selectAllSchedulesDb(userID);
   },
 
   async updateSchedule(userID, scheduleID, schedule, courses) {

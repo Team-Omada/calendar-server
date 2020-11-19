@@ -29,8 +29,9 @@ module.exports = {
 
   // gets all schedules with associated user info
   async getSchedules(req, res, next) {
+    const { userID } = req.userInfo;
     try {
-      const results = await retrieveSchedules();
+      const results = await retrieveSchedules(userID);
       res.send({
         results,
       });

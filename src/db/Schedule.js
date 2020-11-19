@@ -105,23 +105,28 @@ module.exports = {
   /**
    * Retrieves all schedules with user info and schedule info (limit 10)
    *
+   * @param {Number} userID of the user making request to grab all bookmarked schedules
+   *
    * @returns {Array} with 10 schedule rows
    * @throws {DatabaseError} if the query could not be executed
    */
-  async selectAllSchedulesDb() {
+  async selectAllSchedulesDb(userID = 0) {
     const query = `
-    SELECT users.userID, users.username, users.email, schedules.scheduleID, 
-      datePosted, scheduleTitle, semester, semesterYear, 
-      GROUP_CONCAT(schedule_has_courses.courseID SEPARATOR ', ') as courses
-    FROM users
-    JOIN schedules ON schedules.userID = users.userID
-    JOIN schedule_has_courses ON schedules.scheduleID = schedule_has_courses.scheduleID
-    GROUP BY schedules.scheduleID
-    ORDER BY schedules.datePosted DESC
-    LIMIT 10
+      SELECT users.userID, users.username, users.email, schedules.scheduleID, 
+        datePosted, scheduleTitle, semester, semesterYear, 
+        GROUP_CONCAT(schedule_has_courses.courseID SEPARATOR ', ') as courses,
+        IF(users_bookmark_schedules.scheduleID IS NULL, false, true) as bookmarked
+      FROM users
+      JOIN schedules ON schedules.userID = users.userID
+      JOIN schedule_has_courses ON schedules.scheduleID = schedule_has_courses.scheduleID
+      LEFT JOIN users_bookmark_schedules ON users_bookmark_schedules.userID = ? 
+        AND users_bookmark_schedules.scheduleID = schedules.scheduleID
+      GROUP BY schedules.scheduleID
+      ORDER BY schedules.datePosted DESC
+      LIMIT 10;
     `;
     try {
-      const [results] = await pool.query(query);
+      const [results] = await pool.execute(query, [userID]);
       return results;
     } catch (err) {
       throw new DatabaseError(500, "Error fetching schedules.");
