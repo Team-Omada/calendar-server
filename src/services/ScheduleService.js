@@ -71,6 +71,7 @@ module.exports = {
       return {
         userID: scheduleInfo.userID,
         username: scheduleInfo.username,
+        email: scheduleInfo.email,
         scheduleID: scheduleInfo.scheduleID,
         datePosted: scheduleInfo.datePosted,
         scheduleTitle: scheduleInfo.scheduleTitle,

@@ -144,7 +144,7 @@ module.exports = {
    */
   async selectScheduleByIdDb(scheduleID) {
     const query = `
-      SELECT users.userID, users.username, schedules.scheduleID, 
+      SELECT users.userID, users.username, users.email, schedules.scheduleID, 
         datePosted, scheduleTitle, semester, semesterYear, 
         courses.courseID, instructor, courseName, startTime, endTime, 
         monday, tuesday, wednesday, thursday, friday, saturday, sunday
