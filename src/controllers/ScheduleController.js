@@ -7,6 +7,7 @@ const {
   removeSchedule,
   updateSchedule,
 } = require("../services/ScheduleService");
+const { searchAllSchedules } = require("../services/SearchService");
 
 module.exports = {
   // creates a schedule with associated course and section info
@@ -28,10 +29,16 @@ module.exports = {
   },
 
   // gets all schedules with associated user info
+  // if request has query strings, do a full search on tables
   async getSchedules(req, res, next) {
     const { userID } = req.userInfo;
+    let results = [];
     try {
-      const results = await retrieveSchedules(userID);
+      if (Object.keys(req.query).length !== 0) {
+        results = await searchAllSchedules(userID, req.query);
+      } else {
+        results = await retrieveSchedules(userID);
+      }
       res.send({
         results,
       });
