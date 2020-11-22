@@ -35,7 +35,7 @@ module.exports = {
    */
   async selectAllScheduleCommentsDb(scheduleID) {
     const query = `
-      SELECT username, email, text, datePosted
+      SELECT comments.userID, commentID, username, email, text, datePosted
       FROM comments
       JOIN users ON comments.userID = users.userID AND scheduleID = ?
       ORDER BY datePosted;
