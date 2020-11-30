@@ -29,7 +29,8 @@ module.exports = {
       JOIN schedule_has_courses AS searchCourses ON schedules.scheduleID = searchCourses.scheduleID
       LEFT JOIN users_bookmark_schedules ON users_bookmark_schedules.userID = ?
         AND users_bookmark_schedules.scheduleID = schedules.scheduleID
-      WHERE MATCH(searchCourses.instructor, searchCourses.courseName) AGAINST(?)
+      WHERE MATCH(searchCourses.instructor) AGAINST(?)
+        OR MATCH(searchCourses.courseName) AGAINST (?)
         OR MATCH(scheduleTitle) AGAINST (?)
         OR searchCourses.courseID LIKE CONCAT(?, "%")
         OR users.username LIKE CONCAT(?, "%")
