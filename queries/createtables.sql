@@ -46,9 +46,9 @@ CREATE TABLE `comments` (
 
 CREATE TABLE `schedule_has_courses` (
   `courseID` VARCHAR(45) NOT NULL,
-  `courseName` VARCHAR(100) NOT NULL,
+  `courseName` VARCHAR(100),
   `scheduleID` INT UNSIGNED NOT NULL,
-  `instructor` VARCHAR(45) NOT NULL,
+  `instructor` VARCHAR(45),
   `startTime` VARCHAR(5) NOT NULL,
   `endTime` VARCHAR(5) NOT NULL,
   `monday` tinyint(1) NOT NULL,
