@@ -65,7 +65,7 @@ module.exports = {
           query += `AND MATCH(instructor) AGAINST(?)`;
           values.push(val);
         } else if (key === "courseID") {
-          query += `AND courseID = ?`;
+          query += `AND courseID LIKE CONCAT(?, "%")`;
           values.push(val);
         }
       }
