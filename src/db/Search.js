@@ -67,6 +67,9 @@ module.exports = {
         } else if (key === "courseID") {
           query += `AND courseID LIKE CONCAT(?, "%")`;
           values.push(val);
+        } else if (key === "email") {
+          query += `AND email LIKE CONCAT(?, "%")`;
+          values.push(val);
         }
       }
     };
