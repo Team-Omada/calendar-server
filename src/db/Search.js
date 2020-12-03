@@ -1,4 +1,5 @@
 const pool = require("../utils/connection");
+const mysql = require("mysql2");
 const { DatabaseError } = require("../utils/errors");
 
 module.exports = {
@@ -65,11 +66,22 @@ module.exports = {
           query += `AND MATCH(instructor) AGAINST(?)`;
           values.push(val);
         } else if (key === "courseID") {
-          query += `AND courseID LIKE CONCAT(?, "%")`;
+          query += `AND courseID LIKE CONCAT(?, "%") `;
           values.push(val);
         } else if (key === "email") {
-          query += `AND email LIKE CONCAT(?, "%")`;
+          query += `AND email LIKE CONCAT(?, "%") `;
           values.push(val);
+        } else if (key === "days") {
+          // if val is an array, loop, otherwise treat it as a normal string
+          if (Array.isArray(val)) {
+            val.forEach((day) => {
+              query += `AND ${day} = 1 `;
+              values.push(1);
+            });
+          } else {
+            query += `AND ${val} = 1 `;
+            values.push(1);
+          }
         }
       }
     };
@@ -80,14 +92,16 @@ module.exports = {
       addGeneralSearchVals();
     } else if (params.q && Object.keys(params).length > 1) {
       addParams();
-      query += ` GROUP BY schedules.scheduleID) AND ${generalSearchQuery} ${groupQuery}`;
+      query += ` ) AND ${generalSearchQuery} ${groupQuery}`;
       addGeneralSearchVals();
     } else {
       addParams();
-      query += ` GROUP BY schedules.scheduleID) ${groupQuery}`;
+      query += ` ) ${groupQuery}`;
     }
     try {
-      const [results] = await pool.execute(query, values);
+      // apparently you always have to use the format function first at least for this query
+      // weird issues occured with bookmarks if it's not used, not entirely sure why?
+      const [results] = await pool.execute(mysql.format(query, values));
       return results;
     } catch (err) {
       console.log(err);
