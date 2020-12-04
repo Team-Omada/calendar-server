@@ -59,17 +59,22 @@ module.exports = {
     };
 
     // adds appropriate params that were found in the query string
+    // if query param structure became complex, it may be best to abandon simple query params
+    // in favor of parsing objects
     const addParams = () => {
       query += filterQuery;
       for (const [key, val] of Object.entries(params)) {
         if (key === "instructor") {
           query += `AND MATCH(instructor) AGAINST(?)`;
           values.push(val);
-        } else if (key === "courseID") {
-          query += `AND courseID LIKE CONCAT(?, "%") `;
+        } else if (key === "courseID" || key === "email") {
+          query += `AND ${key} LIKE CONCAT(?, "%") `;
           values.push(val);
-        } else if (key === "email") {
-          query += `AND email LIKE CONCAT(?, "%") `;
+        } else if (key === "start") {
+          query += `AND startTime >= ? `;
+          values.push(val);
+        } else if (key === "end") {
+          query += `AND endTime <= ? `;
           values.push(val);
         } else if (key === "days") {
           // if val is an array, loop, otherwise treat it as a normal string
@@ -86,8 +91,8 @@ module.exports = {
       }
     };
 
-    // when there is only a general search (q)
     if (params.q && Object.keys(params).length === 1) {
+      // when there is only a general search (q)
       query = query + generalSearchQuery + groupQuery;
       addGeneralSearchVals();
     } else if (params.q && Object.keys(params).length > 1) {
