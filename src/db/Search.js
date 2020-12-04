@@ -76,6 +76,9 @@ module.exports = {
         } else if (key === "end") {
           query += `AND endTime <= ? `;
           values.push(val);
+        } else if (key === "semester") {
+          query += `AND semester = ? `;
+          values.push(val);
         } else if (key === "days") {
           // if val is an array, loop, otherwise treat it as a normal string
           if (Array.isArray(val)) {
