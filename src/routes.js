@@ -11,6 +11,13 @@ router.post("/login", UserController.login);
 // IMPORTANT: all of these routes should be authenticated, but this could change
 // some of these look a bit complicated, but I think this follows REST standards (except for bookmarks)
 
+// get all schedules for a particular user
+router.get(
+  "/users/:id/schedules",
+  UserController.checkAuthenticated,
+  UserController.getUserSchedules
+);
+
 // create a schedule
 router.post(
   "/schedules",

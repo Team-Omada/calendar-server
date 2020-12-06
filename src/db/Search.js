@@ -10,7 +10,7 @@ module.exports = {
    * @param {Number} userID of user making request, to mark schedules as bookmarked
    * @param {Object} params all query params retrieved from the request
    *
-   * @returns {Array} of all schedules the search finds (for now LIMIT 10)
+   * @returns {Array} of all schedules the search finds
    * @throws {DatabaseError} if query fails
    */
   async fullSearchSchedulesDb(userID = 0, params) {
@@ -47,7 +47,7 @@ module.exports = {
     const groupQuery = `
       GROUP BY schedules.scheduleID
       ORDER BY schedules.datePosted DESC
-      LIMIT 10
+      ${params.ignoreLimit ? "" : "LIMIT 10"}
     `;
 
     // adds the correct number of values to insert into generalSearchQuery since they are duplicated (7)
@@ -65,10 +65,13 @@ module.exports = {
       query += filterQuery;
       for (const [key, val] of Object.entries(params)) {
         if (key === "instructor") {
-          query += `AND MATCH(instructor) AGAINST(?)`;
+          query += `AND MATCH(instructor) AGAINST(?) `;
           values.push(val);
-        } else if (key === "courseID" || key === "email") {
-          query += `AND ${key} LIKE CONCAT(?, "%") `;
+        } else if (key === "requestedID") {
+          query += `AND userID = ? `;
+          values.push(val);
+        } else if (key === "courseID") {
+          query += `AND courseID LIKE CONCAT(?, "%") `;
           values.push(val);
         } else if (key === "start") {
           query += `AND startTime >= ? `;

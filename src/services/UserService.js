@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const { fullSearchSchedulesDb } = require("../db/Search");
 const { checkUniqueUserDb, insertUserDb } = require("../db/User");
 const { BadRequest, GeneralError } = require("../utils/errors");
 
@@ -87,5 +88,18 @@ module.exports = {
    */
   async createUser(email, username, passhash) {
     return await insertUserDb(email, username, passhash);
+  },
+
+  /**
+   * Wrapper function for getting all user schedules
+   * Includes any search params should we need it
+   *
+   * @param {Number} userID of user that is making request
+   * @param {Object} params includes id of user to get schedules of and any search params
+   *
+   * @returns {Array} all of the schedules found with userID and any params specified
+   */
+  async retrieveUserSchedules(userID, params) {
+    return await fullSearchSchedulesDb(userID, params);
   },
 };

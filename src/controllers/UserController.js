@@ -2,6 +2,7 @@ const {
   validateUser,
   hashPassword,
   createUser,
+  retrieveUserSchedules,
 } = require("../services/UserService");
 const {
   checkCredentials,
@@ -9,6 +10,7 @@ const {
   verifyJWT,
 } = require("../services/AuthService");
 const { Unauthorized } = require("../utils/errors");
+const { request } = require("express");
 
 module.exports = {
   // Validates new user credentials, hashes password, creates user, sends JWT with credentials
@@ -76,6 +78,21 @@ module.exports = {
         message: err.message,
         info: err.info,
       });
+    }
+  },
+
+  // Gets all user schedules given a userID and searches by any query params given
+  async getUserSchedules(req, res, next) {
+    const { userID } = req.userInfo;
+    const { id: requestedID } = req.params;
+    const params = { ...req.query, requestedID };
+    try {
+      const results = await retrieveUserSchedules(userID, params);
+      res.send({
+        results,
+      });
+    } catch (err) {
+      next(err);
     }
   },
 };
