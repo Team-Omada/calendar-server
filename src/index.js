@@ -14,15 +14,19 @@ const cors = require("cors");
 const morgan = require("morgan");
 const router = require("./routes");
 const { handleErrors } = require("./utils/errors");
+
+const isProduction = process.env.NODE_ENV === "production";
+
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: isProduction ? process.env.CLIENT_HOSTNAME : "*",
+  })
+);
 app.use(morgan("combined")); // middleware to log details of request to console
 app.use(express.json()); // used for processing incoming JSON
 
-// TODO: once routes get out of hand, we should refactor.
-// Each route such as "/bookmark" should have its own file
-// However, routes.js should not be too large as everything is broken into components
 app.use("/", router);
 
 app.use(handleErrors);
