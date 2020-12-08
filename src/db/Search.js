@@ -9,11 +9,12 @@ module.exports = {
    *
    * @param {Number} userID of user making request, to mark schedules as bookmarked
    * @param {Object} params all query params retrieved from the request
+   * @param {Number} limit indicates whether there should be a limit on schedules, default no limit
    *
    * @returns {Array} of all schedules the search finds
    * @throws {DatabaseError} if query fails
    */
-  async fullSearchSchedulesDb(userID = 0, params) {
+  async fullSearchSchedulesDb(userID = 0, params, limit, order = "DESC") {
     let values = [userID];
 
     let query = `
@@ -46,8 +47,8 @@ module.exports = {
     `;
     const groupQuery = `
       GROUP BY schedules.scheduleID
-      ORDER BY schedules.datePosted DESC
-      ${params.ignoreLimit ? "" : "LIMIT 10"}
+      ORDER BY schedules.datePosted ${order}
+      ${limit ? `LIMIT ${limit}` : ""}
     `;
 
     // adds the correct number of values to insert into generalSearchQuery since they are duplicated (7)
@@ -55,6 +56,20 @@ module.exports = {
       const columnsToSearch = 7;
       for (let i = 0; i < columnsToSearch; i++) {
         values.push(params.q);
+      }
+    };
+
+    // determines if we need to add pagination query
+    // pagination is entirely based on the indexed field of scheduleID
+    const pagination = () => {
+      if (params.next) {
+        values.push(params.next);
+        return ` AND schedules.scheduleID <= ? `;
+      } else if (params.prev) {
+        values.push(params.prev);
+        return ` AND schedules.scheduleID > ?`;
+      } else {
+        return "";
       }
     };
 
@@ -87,11 +102,9 @@ module.exports = {
           if (Array.isArray(val)) {
             val.forEach((day) => {
               query += `AND ${day} = 1 `;
-              values.push(1);
             });
           } else {
             query += `AND ${val} = 1 `;
-            values.push(1);
           }
         }
       }
@@ -99,15 +112,17 @@ module.exports = {
 
     if (params.q && Object.keys(params).length === 1) {
       // when there is only a general search (q)
-      query = query + generalSearchQuery + groupQuery;
+      query = query + generalSearchQuery + pagination() + groupQuery;
       addGeneralSearchVals();
     } else if (params.q && Object.keys(params).length > 1) {
       addParams();
-      query += ` ) AND ${generalSearchQuery} ${groupQuery}`;
+      const paginationQuery = pagination();
+      query += ` ) AND ${generalSearchQuery} ${paginationQuery} ${groupQuery}`;
       addGeneralSearchVals();
     } else {
       addParams();
-      query += ` ) ${groupQuery}`;
+      const paginationQuery = pagination();
+      query += ` ) ${paginationQuery} ${groupQuery}`;
     }
     try {
       // apparently you always have to use the format function first at least for this query
@@ -115,8 +130,7 @@ module.exports = {
       const [results] = await pool.execute(mysql.format(query, values));
       return results;
     } catch (err) {
-      console.log(err);
-      throw new DatabaseError(500, "Could not complete search.");
+      throw new DatabaseError(500, "Could not fetch schedules.");
     }
   },
 };

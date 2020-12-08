@@ -2,12 +2,11 @@ const {
   createSchedule,
   validateScheduleInfo,
   validateCourseInfo,
-  retrieveSchedules,
+  searchAllSchedules,
   retrieveScheduleById,
   removeSchedule,
   updateSchedule,
 } = require("../services/ScheduleService");
-const { searchAllSchedules } = require("../services/SearchService");
 
 module.exports = {
   // creates a schedule with associated course and section info
@@ -28,18 +27,41 @@ module.exports = {
     }
   },
 
-  // gets all schedules with associated user info
+  // gets all schedules with associated user info with specified limit
   // if request has query strings, do a full search on tables
+  // NOTE: pagination is done on scheduleID index rather than LIMIT, OFFSET
+  //  This means page numbers are arbitrary and based on the last seen ID's in the client
   async getSchedules(req, res, next) {
+    const limit = 4; // the actual limit + 1, accounts for next/prev pagination
     const { userID } = req.userInfo;
+    let prevID, nextID;
     let results = [];
     try {
-      if (Object.keys(req.query).length !== 0) {
-        results = await searchAllSchedules(userID, req.query);
-      } else {
-        results = await retrieveSchedules(userID);
+      results = await searchAllSchedules(userID, req.query, limit);
+      const convertPrev = Number(req.query.prev);
+      const convertNext = Number(req.query.next);
+      // if we get limit back, then that means we need a prev and next id
+      if (results.length === limit) {
+        if (req.query.prev) {
+          nextID = convertPrev;
+          results.splice(0, 1);
+          prevID = results[0].scheduleID;
+        } else {
+          // if on the first page initially or clicking next
+          nextID = results[results.length - 1].scheduleID;
+          prevID = convertNext;
+          results.pop();
+        }
+      } else if (results.length > 0 && req.query.prev) {
+        // if on the first page again
+        nextID = convertPrev;
+      } else if (results.length > 0 && req.query.next) {
+        // if on the last possible page
+        prevID = convertNext;
       }
       res.send({
+        prevID,
+        nextID,
         results,
       });
     } catch (err) {

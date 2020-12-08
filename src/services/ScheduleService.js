@@ -1,11 +1,11 @@
 const {
   insertScheduleDb,
-  selectAllSchedulesDb,
   selectScheduleByIdDb,
   deleteScheduleDb,
   updateScheduleDb,
   checkScheduleExistsDb,
 } = require("../db/Schedule");
+const { fullSearchSchedulesDb, backPaginationDb } = require("../db/Search");
 const { formatCourses } = require("../utils/formatters");
 const { BadRequest, NotFound } = require("../utils/errors");
 
@@ -24,14 +24,25 @@ module.exports = {
   },
 
   /**
-   * Again, a wrapper to keep data section separate, gets all schedule entries in DB
+   * Does basic search if only q param is present
+   * Does basic search plus filtering if other params are present
    *
-   * @param {Number} userID of the user making request to grab all bookmarked schedules
+   * If the previous param is given, an ASC search is performed to properly grab
+   *  ID's of the schedules on the previous "page"
    *
-   * @returns {Array} of all rows returned
+   * @param {Number} userID of user making request, to mark schedules as bookmarked
+   * @param {Object} params containing all query parameters
+   * @param {Number} limit defines wether a limit should be placed on query, default none
+   *
+   * @returns {Array} of all schedules that were found in the search
    */
-  async retrieveSchedules(userID = 0) {
-    return await selectAllSchedulesDb(userID);
+  async searchAllSchedules(userID = 0, params, limit = 0) {
+    if (params.prev) {
+      return (
+        await fullSearchSchedulesDb(userID, params, limit, "ASC")
+      ).reverse();
+    }
+    return await fullSearchSchedulesDb(userID, params, limit);
   },
 
   async updateSchedule(userID, scheduleID, schedule, courses) {
