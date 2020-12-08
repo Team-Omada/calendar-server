@@ -23,8 +23,8 @@ module.exports = {
       let rows = [
         scheduleID,
         course.courseID,
-        course.courseName,
-        course.instructor,
+        course.courseName.trim(),
+        course.instructor.trim(),
         course.startTime,
         course.endTime,
       ];

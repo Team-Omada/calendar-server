@@ -31,7 +31,7 @@ module.exports = {
     try {
       await transactionConn.query("START TRANSACTION");
       const [insertedSchedule] = await transactionConn.execute(scheduleQuery, [
-        schedule.scheduleTitle,
+        schedule.scheduleTitle.trim(),
         schedule.semester,
         schedule.semesterYear,
         userID,
@@ -81,7 +81,7 @@ module.exports = {
     try {
       await transactionConn.query("START TRANSACTION");
       await transactionConn.execute(scheduleQuery, [
-        schedule.scheduleTitle,
+        schedule.scheduleTitle.trim(),
         schedule.semester,
         schedule.semesterYear,
         scheduleID,

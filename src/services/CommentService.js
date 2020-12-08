@@ -70,7 +70,7 @@ module.exports = {
    * @throws {BadRequest} if comment fails to validate
    */
   validateComment(text) {
-    if (text.length > 350 || text.length === 0) {
+    if (text.length > 350 || text.trim()) {
       throw new BadRequest(400, "Comment should only be 350 characters.");
     }
   },

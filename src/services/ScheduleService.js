@@ -104,7 +104,7 @@ module.exports = {
     const { scheduleTitle = "", semester = "", semesterYear = "" } = schedule;
     const semesterPattern = /^(Fall|Spring|Summer|Winter)$/;
     // TODO: add title regex if needed?
-    if (!scheduleTitle) {
+    if (!scheduleTitle.trim()) {
       throw new BadRequest(400, "A title must be provided.", "titleError");
     } else if (!semesterYear) {
       throw new BadRequest(
@@ -156,7 +156,7 @@ module.exports = {
           "Must have 2-4 letters and a 3 digit identifier.",
           "courseIdError"
         );
-      } else if (!courseName || !instructor || days.length == 0) {
+      } else if (!courseName.trim() || !instructor.trim() || days.length == 0) {
         throw new BadRequest(
           400,
           `Missing info for course: ${courseID}`,

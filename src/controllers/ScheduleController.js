@@ -32,7 +32,7 @@ module.exports = {
   // NOTE: pagination is done on scheduleID index rather than LIMIT, OFFSET
   //  This means page numbers are arbitrary and based on the last seen ID's in the client
   async getSchedules(req, res, next) {
-    const limit = 4; // the actual limit + 1, accounts for next/prev pagination
+    const limit = 9; // the actual limit + 1, accounts for next/prev pagination
     const { userID } = req.userInfo;
     let prevID, nextID;
     let results = [];
