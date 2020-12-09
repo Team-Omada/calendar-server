@@ -24,6 +24,7 @@ app.use(
     origin: isProduction ? process.env.CLIENT_HOSTNAME : "*",
   })
 );
+app.options("*", cors()); // adds preflight CORS request to all our routes since they use custom header (auth)
 app.use(morgan("combined")); // middleware to log details of request to console
 app.use(express.json()); // used for processing incoming JSON
 
