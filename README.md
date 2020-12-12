@@ -1,8 +1,20 @@
-# server
+# Omada Calendar Server
 
-Our entry point for the server is index.js. Since this has a database connection now, you need a .env file! This way we don't expose the school's RDS credentials to everyone on Github. Just place the .env file that has the proper variables in the root of the project! Source control won't include it when you commit.
+An Express server designed specifically for the Omada Calendar client using a MySQL RDS instance hosted by Cal State San Marcos. Some basic CREATE statements are provided, but some indexes were not included in this file. Unfortunately, these indexes are the only pieces of the project not documented.
 
-## Project setup
+The server structure follows a fairly standard structure based on our research. The flow is as follows:
+index.js =>
+routes.js =>
+./controllers =>
+./services =>
+./db =>
+Handle any thrown errors in ./utils/errors.js middleware that is called from controllers
+
+All data retrieved from the database is then bubbled up to the controller and sent out to the client. For the most part we tried to stick to REST standards to make it as unopinionated as possible.
+
+Check out the client at https://omada-calendar.netlify.app/login
+
+## Development
 
 ```
 npm install
@@ -20,14 +32,6 @@ npm run dev
 npm run start
 ```
 
-### Testing database queries
-
-To connect to the database and write some queries, download [MySQLWorkbench](https://dev.mysql.com/downloads/workbench/) and enter the info on CC. Depending on the default settings you may need to go to the SSL tab and set the "Use SSL" option to "No". Otherwise you may get an error.
-
-### VSCode Extensions
-
-I would recommend downloading the ESLint and Prettier extensions to keep coding styles consistent!
-
 ### Commit conventions
 
-Just to organize our commits a bit, we could just use the "feat", "fix", "chore" convention from this [guide](https://www.conventionalcommits.org/en/v1.0.0/).
+Just to organize commits, we could just use the "feat", "fix", "chore" convention from this [guide](https://www.conventionalcommits.org/en/v1.0.0/).

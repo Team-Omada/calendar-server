@@ -10,7 +10,6 @@ const {
   verifyJWT,
 } = require("../services/AuthService");
 const { Unauthorized } = require("../utils/errors");
-const { request } = require("express");
 
 module.exports = {
   // Validates new user credentials, hashes password, creates user, sends JWT with credentials
